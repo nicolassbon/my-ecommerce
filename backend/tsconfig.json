@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "lib": ["ES2022"],
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "strict": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "declaration": true
+  },
+  "include": ["src/**/*.ts"]
+}

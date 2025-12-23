@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  email                String    @unique
+  lastname             String
+  password             String
+  address              String
+  role                 UserRole  @default(USER)
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  orders Order[]
+}
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(100) @unique
+  products Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(150)
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  imgUrl      String?  @db.VarChar(255)
+  stock       Int?
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  total     Decimal     @db.Decimal(10, 2)
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
